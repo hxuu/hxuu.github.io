@@ -6,44 +6,55 @@ import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
+import AvatarComponent from "@/components/ui/avatar"
 
 const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
 
 <Layout class="max-w-3xl">
-  <PageHead slot="head" title="Home" />
-  <section class="rounded-lg border">
-    <div class="flex flex-col space-y-1.5 p-6">
-      <h3 class="text-3xl leading-none font-medium">Hxuu</h3>
-      <p class="text-muted-foreground text-sm">
-        /hɛks uː/ &bull; <span class="font-medium">long story behind this name</span>
-      </p>
-    </div>
-    <div class="p-6 pt-0">
-      <p class="text-muted-foreground mb-2 text-sm">Welcome to my blog. Check below to see my socials!</p>
-    </div>
-  </section>
-  <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Latest posts</h2>
-    <ul class="flex flex-col gap-y-4">
-      {
-        blog.map((post) => (
-          <li>
-            <BlogCard entry={post} />
-          </li>
-        ))
-      }
-    </ul>
-    <div class="flex justify-center">
-      <Link
-        href="/blog"
-        class={buttonVariants({ variant: 'ghost' }) + ' group'}
-      >
-        See all posts <span
-          class="ml-1.5 transition-transform group-hover:translate-x-1"
-          >&rarr;</span
-        >
-      </Link>
-    </div>
-  </section>
+    <PageHead slot="head" title="Home" />
+    <section class="rounded-lg border">
+        <div class="flex flex-col space-y-1.5 p-6">
+            <div class="flex items-center mb-3 space-x-2.5">
+                <div client:load>
+                    <AvatarComponent
+                        client:load
+                        src="https://gravatar.com/userimage/273235725/66f2a5be514322a4dd1efa5650bdf573.jpeg"
+                        alt="@hxuu"
+                        fallback="Hx"
+                    />
+                </div>
+                <h3 class="text-3xl leading-none font-medium">Hxuu</h3>
+            </div>
+            <p class="text-muted-foreground text-sm">
+                /hɛks uː/ &bull; <span class="font-medium">long story behind this name</span>
+            </p>
+        </div>
+        <div class="p-6 pt-0">
+            <p class="text-muted-foreground mb-2 text-sm">Welcome to my blog. Check below to see my socials!</p>
+        </div>
+    </section>
+    <section class="flex flex-col gap-y-4">
+        <h2 class="text-2xl font-medium">Latest posts</h2>
+        <ul class="flex flex-col gap-y-4">
+            {
+            blog.map((post) => (
+            <li>
+                <BlogCard entry={post} />
+            </li>
+            ))
+            }
+        </ul>
+        <div class="flex justify-center">
+            <Link
+                href="/blog"
+                class={buttonVariants({ variant: 'ghost' }) + ' group'}
+            >
+                See all posts <span
+                    class="ml-1.5 transition-transform group-hover:translate-x-1"
+                >&rarr;</span
+                >
+            </Link>
+        </div>
+    </section>
 </Layout>
