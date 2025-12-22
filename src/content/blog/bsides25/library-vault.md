@@ -1,10 +1,9 @@
 ---
-title: "\"ClawTheFlag 2k25\": Looking at Signed HTTP Exchanges in Relation to the Same-Origin Policy"
-date: 2025-11-28T08:38:41+01:00
+title: "\"Bsides 2k25\": Popping XSS Through Cache Poisoning & Escalating to RCE"
+date: 2025-12-22T01:09:45+01:00
 tags: ["ctf", "write-up", "cybears"]
-image: ./image001.png
+image: ./background1.png
 author: "hxuu"
-draft: true
 description: "I discuss how shared TLS certificates across unrelated domains can lead to SOP abuse when one domain can present itself as another domain using SXGs"
 ---
 
