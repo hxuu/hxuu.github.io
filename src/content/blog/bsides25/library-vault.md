@@ -24,7 +24,7 @@ With admin access, we abuse a dotenv configuration writer to inject environment 
 * Attachments:
     * [library_vault.zip](https://github.com/Shellmates/BSides-Algiers-2025-challenges/blob/main/web/LibraryVault/LibraryVault_Redacted.zip)
 
-![challenge description](/images/2025-12-25-18-04-08.png)
+![challenge description](../images/2025-12-25-18-04-08.png)
 
 
 ---
@@ -229,7 +229,7 @@ class SearchHandler(BaseHandler):
 
 `SearchHandler` extends `BaseHandler`, and `BaseHandler` extends `tornado.web.RequestHandler`
 
-![both query and body parameters are considered image](/images/2025-12-25-22-56-00.png)
+![both query and body parameters are considered image](../images/2025-12-25-22-56-00.png)
 
 Tornado’s get_argument() doesn’t really care where a parameter comes from. Query string, body -> same thing. If both
 are present, an array [queryString, bodyParam] is created, and the last element (body param) is chosen to be the query.
@@ -258,7 +258,7 @@ The answer is: **new routes unlocked**.
 
 Digging around the UI, the only new surface that appears is /panel.
 
-![checking /panel](/images/Peek\ 2025-12-25\ 23-10.mp4)
+![checking /panel](../images/Peek-2025-12-25-23-10.mp4)
 
 If we check the code, two actions stand out immediately:
 
@@ -384,7 +384,7 @@ This is where environment variables stop being configuration, and start being co
 
 ### Exploiting environment variables to achieve RCE
 
-![Google search about exploiting environment variables](/images/2025-12-25-23-20-51.png)
+![Google search about exploiting environment variables](../images/2025-12-25-23-20-51.png)
 
 A simple google search reveals this article about the topic: https://www.elttam.com/blog/env/
 
@@ -478,7 +478,7 @@ The most obvious starting point is os.environ.
 grep -R "os.environ\[" -n .
 ```
 
-![grep output scrolling](/images/2025-12-25-23-41-33.png)
+![grep output scrolling](../images/2025-12-25-23-41-33.png)
 
 This gives a lot of results, most of which are boring:
 configuration flags, paths, feature toggles, etc.
@@ -489,7 +489,7 @@ Something referencing… BROWSER.
 
 ##### Following the trail: BROWSER
 
-![grep result highlighting webbrowser.py](/images/2025-12-25-23-42-39.png)
+![grep result highlighting webbrowser.py](../images/2025-12-25-23-42-39.png)
 
 That leads us to:
 
@@ -523,7 +523,7 @@ Back to grepping.
 grep -R "import webbrowser" -n .
 ```
 
-![grep output showing antigravity.py](/images/2025-12-25-23-46-04.png)
+![grep output showing antigravity.py](../images/2025-12-25-23-46-04.png)
 
 And there it is.
 
@@ -616,3 +616,19 @@ trigger_payload = {
 resp = requests.post(url+"/panel", data=trigger_payload, cookies=admin_cookies)
 print(resp.text)
 ```
+
+![solve video](../images/library-vault-solve.mp4)
+
+Flag is: (idk ask fodhil, I upsolved lol)
+
+![found flag](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnV3NnR4eGY4dzg2c3NubTFuems3ZmNya3lhMDd4cG03b3JocHJ2dSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/115BJle6N2Av0A/giphy.gif)
+
+## Lessons learned
+
+* Delivery beats payloads. XSS is only an exploit if it reaches a context that can act on it. In this challenge, cache poisoning was the delivery mechanism that turned XSS into a real privilege escalation.
+* Input provenance matters. Don’t let different layers “merge” inputs without preserving their origin. Tornado’s get_argument merging and a cache that ignores body parameters is a textbook input-provenance trap.
+* Cache keys should account for semantics. If the backend behavior depends on body content, the cache key must incorporate it — otherwise cached responses can be stale or malicious.
+* Configuration is not always harmless. Allowing administrators (or admin-level actions) to write config files that are later sourced by runtime components is risky if those config interfaces don’t strictly validate and escape inputs.
+* Small quoting mistakes are gigantic. The .env line format and quoting/backslash handling are fragile. If writers don’t escape backslashes/newlines, attackers can inject new variables or break quoting in ways that cross privilege boundaries.
+* Dynamic analysis + quick grep/tree beats blind static reading. A few well-placed tree, grep, and small local tests found the important interactions much faster than reading everything top-to-bottom.
+* Think in violated assumptions, not just bugs. Each exploit step was a violated assumption. Frame your report around the assumptions that failed; that’s how readers learn transferable lessons.
