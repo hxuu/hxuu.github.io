@@ -48,7 +48,17 @@ bsides25/library-vault/LibraryVault
 
 The best way to inspect the code is by interacting with the UI first.
 
-![highlighting functionality](../images/library-vault.gif)
+<video
+  controls
+  autoplay
+  loop
+  muted
+  playsinline
+  style="max-width: 100%; border-radius: 8px;">
+  <source src="/videos/library-vault.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 
 We start with a web application that has a search functionality and ability to "report"
 a URL to an admin bot. Without even checking the source, we test for XSS which pops,
@@ -612,7 +622,16 @@ resp = requests.post(url+"/panel", data=trigger_payload, cookies=admin_cookies)
 print(resp.text)
 ```
 
-![solve video](../images/library-vault-solve.gif)
+<video
+  controls
+  autoplay
+  loop
+  muted
+  playsinline
+  style="max-width: 100%; border-radius: 8px;">
+  <source src="/videos/library-vault-solve.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 Flag is: (idk ask fodhil, I upsolved lol)
 
