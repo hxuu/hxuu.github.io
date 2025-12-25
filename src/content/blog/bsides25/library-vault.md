@@ -333,7 +333,22 @@ class PanelHandler(BaseHandler):
 
 Here’s what we have:
 
-* As admin, I can write arbitrary values into .env
+* As admin, I can write arbitrary values into .env thanks to `set_key()` implementation, you can inject backslashes as follows:
+
+```bash
+foo='bar\'
+still_related_to_foo='DOESNT_BELOG_TO_ANYTHING'
+```
+
+Which maliciously becomes:
+
+```bash
+foo='bar\'
+still_related_to_foo='DOESNT_BELOG_TO_ANYTHING
+malicious=value
+#comment'
+```
+
 * Those values are loaded into the process environment
 * A Python interpreter is then launched with those variables
 
