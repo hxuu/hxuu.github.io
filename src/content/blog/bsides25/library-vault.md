@@ -50,7 +50,7 @@ bsides25/library-vault/LibraryVault
 
 The best way to inspect the code is by interacting with the UI first.
 
--- do video highlighting search functionality
+![highlighting functionality](../images/library-vault.mp4)
 
 We start with a web application that has a search functionality and ability to "report"
 a URL to an admin bot. Without even checking the source, we test for XSS which pops,
