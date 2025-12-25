@@ -18,14 +18,6 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
 
         <div class="flex flex-col space-y-1.5 p-6">
             <div class="flex items-center mb-3 space-x-2.5">
-                <div client:load>
-                    <AvatarComponent
-                        client:load
-                        src="https://gravatar.com/userimage/273235725/66f2a5be514322a4dd1efa5650bdf573.jpeg"
-                        alt="@hxuu"
-                        fallback="Hx"
-                    />
-                </div>
                 <h3 class="text-3xl leading-none font-medium">Hxuu</h3>
             </div>
             <p class="text-muted-foreground text-sm">
