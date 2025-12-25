@@ -27,9 +27,7 @@ With admin access, we abuse a dotenv configuration writer to inject environment 
 ![challenge description](../images/2025-12-25-18-04-08.png)
 
 
----
-
-### Context & First Impressions
+## Context & First Impressions
 
 At first glance, this didn’t look like a “single bug” challenge. There’s a CDN in Go, a Tornado app, Redis, and an admin bot,
 and with my friend solving it after a 10 hour grind, it already tells me the exploit probably lives between components,
@@ -50,7 +48,7 @@ bsides25/library-vault/LibraryVault
 
 The best way to inspect the code is by interacting with the UI first.
 
-![highlighting functionality](../images/library-vault.mp4)
+![highlighting functionality](../images/library-vault.gif)
 
 We start with a web application that has a search functionality and ability to "report"
 a URL to an admin bot. Without even checking the source, we test for XSS which pops,
@@ -184,7 +182,6 @@ Taking a step back, let's revisit what I have:
 5. The flag is on disk.
 
 So the only realistic path is:
-
 **me → influence something cached → admin loads it → pivot → RCE**
 
 Anything else (direct file read, direct command exec) would be too easy and clearly not intended.
@@ -192,7 +189,6 @@ Anything else (direct file read, direct command exec) would be too easy and clea
 ### Exploration & Failed Paths
 
 I spent some time trying to fight the bot logic directly.
-
 The report handler hardcodes the URL:
 
 ```bash
@@ -200,7 +196,6 @@ The report handler hardcodes the URL:
 ```
 
 No reflection. No user input. Dead end.
-
 That basically kills all classic “send admin my link” ideas.
 
 So the question became:
@@ -617,7 +612,7 @@ resp = requests.post(url+"/panel", data=trigger_payload, cookies=admin_cookies)
 print(resp.text)
 ```
 
-![solve video](../images/library-vault-solve.mp4)
+![solve video](../images/library-vault-solve.gif)
 
 Flag is: (idk ask fodhil, I upsolved lol)
 
