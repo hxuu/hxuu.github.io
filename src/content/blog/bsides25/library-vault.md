@@ -405,39 +405,138 @@ What I’m interested in doing with this writeup, though, is not just repeating 
 Let’s first separate what is given from what still feels like a magic jump.
 
 Up to and including `PYTHONWARNINGS`, the article makes total sense.
-First, the part up to and including PYTHONWARNINGS is clear. The article thought of how
-the interpreter could be made vulnearble, read its man page and found a the warning control system.
-In its code, it found the arbitrary module load.
 
-The question I will answer is:
-> How can we systematically find the target module that yields RCE?
+The author:
 
-My approach will help clear the "magic jump" in the article.
+* looked at Python’s startup behavior,
+* checked the documentation / help output,
+* found that warnings are configurable via environment variables,
+* and noticed that this mechanism allows importing arbitrary modules.
 
----
+Cool. No issue there.
 
-I start every research with a mental model that highlights where I stand and what my question is.
-In this case, I know I want to exploit python using environment variables, and from the blog,
-I know `PYTHONWARNINGS` allows me to load a module. However, which one should I choose?
+The part that does feel like a leap is this:
 
-The question is better formed in another way:
+> “Okay, now load antigravity, set BROWSER, and boom, RCE.”
 
-* Which python module makes malicious use of environment variables? And how to track this sink to find a suitable source?
+My question was:
 
-Let's first grep for os.environ.get( and similar things, we get a list of everything
-BROWSER stands out, let's see in which file, webbrowser, interesting, let's check the docs,
-docs says we can specify a BROWSER to run, i.e a binary!
+> Why antigravity?
+> And more importantly: how could I have found that without already knowing the answer?
 
-webbrowser only defined the prototype (JS reference lol), it doesn't execute anything,
-let's see where webbrowser is used and whether it's used by modules that trigger it directly.
+That’s the question I want to answer here.
 
-grep for import webbrowser and such, we find guess what! antigravity!
+### Reframing the question (this is important)
 
----
+I always start research by clearly stating what I know and what I’m looking for.
 
-After we found antigravity, we carry on with the exploit and whatnot to get the flag.
+What I know at this point:
 
-and in the spirit of htb, let's do a reverse shell just for fun!
+* I control environment variables.
+* Python will import one module of my choosing via PYTHONWARNINGS.
+* The module will execute during interpreter startup.
+* My goal is RCE, not just a crash or a print.
+
+So the real question is not:
+> “Which module gives RCE?”
+
+That’s too vague.
+
+A better question is:
+
+> Which Python standard library module uses environment variables in a way that eventually leads to command execution?
+
+That gives me a direction:
+
+* environment variables → code path → process execution
+
+In other words:
+I’m looking for a sink.
+
+### Where to search: stdlib, not the application
+
+At this point, the application code is irrelevant.
+We’re attacking the Python runtime itself, so we should look where Python lives.
+
+Inside the container, Python is here:
+```bash
+root@b7ab6643bec6:/usr/local/lib/python3.12# pwd
+/usr/local/lib/python3.12
+```
+
+This directory contains the entire standard library.
+
+So instead of guessing modules, I do what any lazy researcher does:
+
+> grep first, think later
+
+##### First grep: who reads environment variables?
+
+The most obvious starting point is os.environ.
+
+```bash
+grep -R "os.environ\[" -n .
+```
+
+![grep output scrolling](images/2025-12-25-23-41-33.png)
+
+This gives a lot of results, most of which are boring:
+configuration flags, paths, feature toggles, etc.
+
+But one thing jumps out.
+
+Something referencing… BROWSER.
+
+##### Following the trail: BROWSER
+
+![grep result highlighting webbrowser.py](images/2025-12-25-23-42-39.png)
+
+That leads us to:
+
+```bash
+/usr/local/lib/python3.12/webbrowser.py
+```
+
+Interesting. According to the docs:
+
+* webbrowser is a standard module
+* It checks the BROWSER environment variable
+* If set, it uses it as a command to execute
+
+Great! We found a lead, but webbrowser by itself doesn't execute anything automatically.
+
+It only defines helpers like open().
+Unless something calls it, nothing happens.
+
+So at this point, we’ve found a dangerous primitive, but not a trigger.
+
+This is another important mindset thing:
+> Finding a sink doesn’t mean exploitation yet.
+
+Now the question becomes:
+> Which module imports webbrowser and actually calls it automatically?
+
+##### Second grep: who imports webbrowser?
+
+Back to grepping.
+```bash
+grep -R "import webbrowser" -n .
+```
+
+![grep output showing antigravity.py](images/2025-12-25-23-46-04.png)
+
+And there it is.
+
+```bash
+/usr/local/lib/python3.12/antigravity.py
+```
+
+At this point I actually laughed a bit.
+Because now the challenge description makes sense.
+
+> “Our librarian is very mature, well-read, and believes that antigravity is the way…”
+
+That wasn’t flavor text.
+That was a hint.
 
 PWNED!!!!
-
