@@ -263,7 +263,16 @@ The answer is: **new routes unlocked**.
 
 Digging around the UI, the only new surface that appears is /panel.
 
-![checking /panel](../images/Peek-2025-12-25-23-10.mp4)
+<video
+  controls
+  autoplay
+  loop
+  muted
+  playsinline
+  style="max-width: 100%; border-radius: 8px;">
+  <source src="/videos/showcasing-new-routes.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 If we check the code, two actions stand out immediately:
 
