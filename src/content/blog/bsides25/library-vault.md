@@ -15,7 +15,7 @@ With admin access, we abuse a dotenv configuration writer to inject environment 
 
 ## Challenge Overview
 
-* CTF: BSides Algeirs 2025
+* CTF: BSides Algiers 2025
 * Challenge: Library Vault
 * Category: Web
 * Points: 500 (1 solve, kudos to my friend Fodhil for solving it!!)
