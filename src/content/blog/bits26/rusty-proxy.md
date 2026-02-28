@@ -10,8 +10,8 @@ description: "Unlike my usual deep dives, this blog post will contain my thought
 ## Introduction
 
 Last weekend, I played bits ctf with my friends from vuln3ra, it was a special experience
-that featured the use of "lwld", which in arabic translate to the "boy"? Anyways, it was
-a name we called our agents.
+that featured the use of "lwld", which in arabic translates to the "boy"? Anyways, it was
+a name we called our AI agents.
 
 Pretty much everything was solved using lwld, with the exception of few challenges among
 which was one that required setting up a cloudflare worker to initiate requests from
