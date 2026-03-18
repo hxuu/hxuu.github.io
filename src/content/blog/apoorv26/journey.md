@@ -18,7 +18,7 @@ old days, i.e. BC (before gpt lol).
 
 ## How it starts
 
-I started with looking up the name `makeki` on discord. It's our first clue anyway.
+I started by looking up the name `makeki` on discord. It's our first clue anyway.
 Funny enough, participants had already changed their usernames to be `makeki` (including myself btw lol),
 but it wasn't hard to figure out the author based on their discord role:
 
