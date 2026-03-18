@@ -1,5 +1,5 @@
 ---
-title: "Dice25: Writeup for web/cookie-recipes-v3"
+title: "\"Dice 2k25\": Bypassing a Length Check via qs Array Parsing and JavaScript Type Coercion"
 date: 2025-04-12T12:18:04+01:00
 tags: ["ctf", "write-up", "dice"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Cookie Recipes V3"
+description: "I send number[]=1000000000 to trick Express's qs parser into producing an array that passes a length check and coerces to the target number."
 summary: "Bypass ExpressJS length check using `number[]=value`; `qs` parses array, coerced to pass validation."
 canonicalURL: ""
 disableHLJS: false

@@ -1,5 +1,5 @@
 ---
-title: "L3AK25: Writeup for Web/Notorious-Note"
+title: "\"L3AK 2k25\": Bypassing sanitize-html via Prototype Pollution"
 date: 2025-07-14T09:31:13+01:00
 tags: ["ctf", "write-up", "l3ak"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Notorious Note"
+description: "I pollute Object.prototype through a custom query parser to smuggle an onload attribute past sanitize-html's attribute whitelist."
 summary: "A prototype pollution vulnerability in a custom parser enables bypassing `sanitize-html`, allowing an XSS via `<iframe onload>`. Exploitation relies on unsafe object property checks and inherited config values."
 canonicalURL: ""
 disableHLJS: false

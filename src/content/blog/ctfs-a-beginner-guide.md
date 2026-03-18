@@ -1,6 +1,6 @@
 ---
-title: "Ctfs - A Beginner's Guide"
-description: "Breaking into CTFs: A Beginner's Guide to Capture the Flag Competitions"
+title: "CTFs: A Practical Starting Point for Learning Cybersecurity"
+description: "I share how I got into CTFs, which tools and categories to start with, and why practicing through challenges beats passive learning every time."
 date: 2024-08-08T14:08:49+01:00
 tags: ["ctf", "cybersecurity"]
 authors: ["hxuu"]

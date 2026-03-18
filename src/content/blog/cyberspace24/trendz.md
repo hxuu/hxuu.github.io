@@ -1,9 +1,9 @@
 ---
-title: "CyberSpace24 - Trendz"
+title: "\"CyberSpace 2k24\": Leaking a JWT Secret via Nginx Alias Path Traversal"
 date: 2024-09-02T11:51:43+01:00
 tags: ["ctf", "write-up", "cyberspace"]
 authors: ["hxuu"]
-description: "CTF write-up for Trendz"
+description: "I exploit a misconfigured Nginx alias to read the jwt.secret file, then forge an admin JWT token to access the hidden post containing the flag."
 summary: "To solve the \"Trendz\" CTF challenge, exploit JWT token validation and secret key exposure. By accessing the `/static` endpoint to retrieve the JWT secret, craft a valid token with the \"admin\" role to view the hidden post and obtain the flag."
 canonicalURL: ""
 disableHLJS: false

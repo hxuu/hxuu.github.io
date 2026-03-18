@@ -1,5 +1,5 @@
 ---
-title: "L3AK25: Writeup for Web/Flag-L3ak"
+title: "\"L3AK 2k25\": Reconstructing a Flag via XS-Search Side-Channel"
 date: 2025-07-14T09:31:01+01:00
 tags: ["ctf", "write-up", "l3ak"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Flag L3ak"
+description: "I exploit a search endpoint that redacts but still matches the flag, using a 3-character sliding window oracle to brute-force it character by character."
 summary: "The application is vulnerable to a side-channel attack known as XS-Search, a subclass of XS-Leaks. By observing differences in server responses based on 3-character search queries, we reconstructed the flag one character at a time."
 canonicalURL: ""
 disableHLJS: false

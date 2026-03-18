@@ -1,5 +1,5 @@
 ---
-title: "CyberSpace24 - Feature Unlocked"
+title: "\"CyberSpace 2k24\": Redirecting Validation to a Rogue Server to Unlock RCE"
 date: 2024-09-02T10:28:44+01:00
 tags: ["ctf", "write-up", "cyberspace"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Feature Unlocked"
+description: "I override the validation server via a debug cookie, serve a future-dated signed timestamp from my own server, and chain the unlocked feature into RCE to read the flag."
 summary: "In this CTF challenge, we exploited a web app's validation mechanism by setting a custom validation server with debug mode enabled. This allowed us to bypass feature access controls and perform Remote Code Execution (RCE) to retrieve the flag."
 canonicalURL: ""
 disableHLJS: false

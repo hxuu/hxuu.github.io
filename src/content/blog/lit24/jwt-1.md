@@ -1,5 +1,5 @@
 ---
-title: "LITCTF24 - Jwt 1"
+title: "\"LITCTF 2k24\": Bypassing JWT Authentication With No Signature Verification"
 date: 2024-08-13T18:34:00+01:00
 tags: ["ctf", "write-up", 'litctf']
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Jwt 1"
+description: "I modify the admin field in the JWT payload to true, re-sign it with an arbitrary key, and access the flag since the server performs no signature verification."
 canonicalURL: ""
 disableHLJS: false
 disableShare: false

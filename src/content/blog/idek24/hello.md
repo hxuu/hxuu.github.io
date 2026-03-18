@@ -1,5 +1,5 @@
 ---
-title: "IdekCTF 24 - Hello"
+title: "\"IdekCTF 2k24\": Chaining Nginx Path Confusion and XSS to Steal an httpOnly Flag Cookie"
 date: 2024-08-18T22:22:37+01:00
 tags: ["ctf", "write-up", "idekctf"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Hello"
+description: "I bypass a Nginx exact-match rule via PHP-FPM path confusion to expose phpinfo(), then inject a base64-encoded XSS payload using a form feed character as whitespace to exfiltrate the flag."
 canonicalURL: ""
 disableHLJS: false
 disableShare: false

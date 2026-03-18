@@ -1,5 +1,5 @@
 ---
-title: "LITCTF24 - Anti Inspect"
+title: "\"LITCTF 2k24\": Extracting a Flag Hidden in a console.log CSS Format Specifier"
 date: 2024-08-13T17:55:33+01:00
 tags: ["ctf", "write-up", 'litctf']
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Anti Inspect"
+description: "I curl the page to avoid an infinite loop, then run the script in Node.js to resolve the %c format specifier and reveal the actual flag string."
 canonicalURL: ""
 disableHLJS: false
 disableShare: false

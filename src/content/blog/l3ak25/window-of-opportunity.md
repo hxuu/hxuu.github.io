@@ -1,5 +1,5 @@
 ---
-title: "L3AK25: Writeup for Web/Window-of-Opportunity"
+title: "\"L3AK 2k25\": Stealing a Flag via window.opener With SOP Disabled"
 date: 2025-07-14T09:31:33+01:00
 tags: ["ctf", "write-up", "l3ak"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Window of Opportunity"
+description: "I abuse window.opener to navigate the admin's tab to /get_flag and exfiltrate the response, bypassing CSRF protection entirely."
 summary: "Exploits `window.opener` with SOP disabled to bypass CSRF protections and read sensitive data from the admin's tab via DOM access. "
 canonicalURL: ""
 disableHLJS: false

@@ -1,5 +1,5 @@
 ---
-title: "N0PS25: Writeup for Web/Plotwist"
+title: "\"N0PS 2k25\": Bypassing NGINX Access Controls via h2c Request Smuggling"
 date: 2025-06-04T11:09:15+01:00
 tags: ["ctf", "write-up", "nops"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Plotwist"
+description: "I smuggle HTTP/2 cleartext requests past NGINX to reach a restricted endpoint, then use shell expansion to read the flag under a strict character filter."
 summary: "This writeup covers the solution to the **\"Plotwist\"** web challenge from N0PS CTF 2025, which involves bypassing NGINX access controls to reach a restricted API endpoint."
 canonicalURL: ""
 disableHLJS: false

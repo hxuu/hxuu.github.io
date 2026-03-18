@@ -1,5 +1,5 @@
 ---
-title: "script25: Writeup for Misc/Modulo"
+title: "\"Script 2k25\": Escaping a Python Jail Using Only the Modulo Operator"
 date: 2025-08-18T12:42:40+01:00
 tags: ["ctf", "write-up", "scriptCTF", "n00bzCTF"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Modulo"
+description: "I exploit Python's introspection and format string tricks to escape a jail that bans letters, digits, and every binary operator except modulo."
 summary: "Python jail challenge exploited via `getattr`, circumventing AST and character restrictions, dynamically generating numbers and strings with `%c` achieving remote code execution."
 canonicalURL: ""
 disableHLJS: false

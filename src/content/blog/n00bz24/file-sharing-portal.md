@@ -1,5 +1,5 @@
 ---
-title: "n00bzCTF - File Sharing Portal"
+title: "\"n00bzCTF 2k24\": Achieving RCE via SSTI in a Tar File Upload Portal"
 date: 2024-08-09T09:40:00+01:00
 tags: ["ctf", "write-up", "n00bzCTF"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for File Sharing Portal"
+description: "I archive a file named with a Jinja2 payload, exploit Flask's unsanitized render_template_string call, and chain the request object to import os and execute arbitrary commands."
 canonicalURL: ""
 disableHLJS: false
 disableShare: false

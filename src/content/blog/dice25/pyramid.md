@@ -1,5 +1,5 @@
 ---
-title: "Dice25: Writeup for web/pyramid"
+title: "\"Dice 2k25\": Abusing Node.js Async Body Parsing to Create a Self-Referring User"
 date: 2025-04-15T10:42:39+01:00
 tags: ["ctf", "write-up"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Pyramid"
+description: "I exploit the gap between Express header handling and Node's body 'end' event to register a self-referring account and compound referrals into 100 billion coins."
 summary: "Exploited Node.js streams to self-refer, bypassing real users for coins."
 canonicalURL: ""
 disableHLJS: false

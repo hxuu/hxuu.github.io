@@ -1,5 +1,5 @@
 ---
-title: "Ingeneer25 (Problem Solving) - The Unseen Curse"
+title: "\"Ingeneer 2k25\": Solving a Muddy Children Epistemic Logic Puzzle"
 date: 2025-05-22T19:59:22+01:00
 tags: ["ctf", "write-up", "problem-solving"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "Challenge write-up for The Unseen Curse, problem solving challenge."
+description: "I simulate iterative knowledge deduction between two players to find the minimum number of nights before one can declare the true total."
 summary: "This challenge masterfully blends deductive logic, iterative inference, and a compelling magical narrative. It requires understanding how knowledge propagates in rounds and how silence becomes information. By modeling the interactions over successive nights, we compute the precise moment someone can break the uncertainty and solve the puzzle."
 canonicalURL: ""
 disableHLJS: false

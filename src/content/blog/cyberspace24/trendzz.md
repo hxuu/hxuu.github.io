@@ -1,5 +1,5 @@
 ---
-title: "CyberSpace24 - Trendzz"
+title: "\"CyberSpace 2k24\": Bypassing a Post Limit via Race Condition in Go"
 date: 2024-09-02T11:13:20+01:00
 tags: ["ctf", "write-up", "cyberspace"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Trendzz"
+description: "I send concurrent requests to exploit a non-atomic post count check, exceeding the 12-post threshold needed to unlock the flag endpoint."
 summary: "The challenge demonstrated a race condition vulnerability in post creation due to non-atomic operations. This allowed concurrent requests to bypass post limits. Key lessons include ensuring atomic operations, reviewing code for vulnerabilities, and using automated scripts for testing."
 canonicalURL: ""
 disableHLJS: false

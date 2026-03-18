@@ -1,5 +1,5 @@
 ---
-title: "PearlCTF 25 - Web/Tic-Tac-Toe"
+title: "\"PearlCTF 2k25\": Reading the Host Filesystem via an Exposed Docker Daemon"
 date: 2025-03-08T22:13:34+01:00
 tags: ["ctf", "write-up", "pearl"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Ttt"
+description: "I abuse a URL substitution flaw to reach an exposed dockerd TCP socket, then create a container with the host filesystem mounted to read the flag."
 summary: ""
 canonicalURL: ""
 disableHLJS: false

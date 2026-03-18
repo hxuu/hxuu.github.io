@@ -1,5 +1,5 @@
 ---
-title: "LITCTF24 - Traversed"
+title: "\"LITCTF 2k24\": Reading Arbitrary Files via URL-Encoded Path Traversal"
 date: 2024-08-13T19:05:10+01:00
 tags: ["ctf", "write-up", 'litctf']
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Traversed"
+description: "I bypass dot-blocking by URL-encoding path separators, then use /proc/self/cwd to resolve the working directory and read the flag file directly."
 canonicalURL: ""
 disableHLJS: false
 disableShare: false

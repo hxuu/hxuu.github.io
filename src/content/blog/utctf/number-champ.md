@@ -1,5 +1,5 @@
 ---
-title: "UTCTF25 - Number Champ (WEB)"
+title: "\"UTCTF 2k25\": Geolocating a Player via Trilateration on a Rigged Elo Game"
 date: 2025-03-18T11:14:27+01:00
 tags: ["ctf", "write-up", "utctf"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Number Champ"
+description: "I level up a dummy account by abusing the battle endpoint, then trilaterate the target's coordinates from three distance measurements to find their exact address."
 summary: ""
 canonicalURL: ""
 disableHLJS: false

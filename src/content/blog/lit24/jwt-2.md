@@ -1,5 +1,5 @@
 ---
-title: "LITCTF24 - Jwt 2"
+title: "\"LITCTF 2k24\": Forging an Admin JWT Using a Hardcoded HMAC Secret"
 date: 2024-08-13T18:49:06+01:00
 tags: ["ctf", "write-up"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Jwt 2"
+description: "I extract the hardcoded secret key from the source code, re-sign a token with admin set to true, and replace the cookie to pass the signature verification check."
 canonicalURL: ""
 disableHLJS: false
 disableShare: false

@@ -1,5 +1,5 @@
 ---
-title: "SEKAI 24 - Intruder"
+title: "\"SEKAI 2k24\": Achieving RCE via Dynamic LINQ Injection in an ASP.NET Book Library"
 date: 2024-08-27T19:14:03+01:00
 tags: ["ctf", "write-up", "sekaictf"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Intruder"
+description: "I inject a reflection-based payload into an unsanitized Dynamic LINQ Where() call to execute arbitrary commands and read the flag from the filesystem."
 canonicalURL: ""
 disableHLJS: false
 disableShare: false

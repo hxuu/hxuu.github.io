@@ -1,5 +1,5 @@
 ---
-title: "N0PS25: Writeup for Web/CasinOps"
+title: "\"N0PS 2k25\": Exploiting Split-Field SSTI in a Flask CSV Export"
 date: 2025-06-02T14:28:42+01:00
 tags: ["ctf", "write-up", "nops"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Casinops"
+description: "I bypass a Jinja2 sanitizer by splitting a payload across two form fields, then chain Flask's request object to reach subprocess and execute commands."
 summary: "A Flask-based web application echoing user-provided data via a CSV export feature. Vulnerable to SSTI"
 canonicalURL: ""
 disableHLJS: false

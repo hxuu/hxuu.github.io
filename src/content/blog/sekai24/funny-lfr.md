@@ -1,5 +1,5 @@
 ---
-title: "SEKAI 24 - Funny Lfr"
+title: "\"SEKAI 2k24\": Bypassing Starlette's FileResponse Size Check via Symlink Race"
 date: 2024-08-30T11:01:21+01:00
 tags: ["ctf", "write-up", "sekaictf"]
 author: "hxuu"
@@ -8,7 +8,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "CTF write-up for Funny Lfr"
+description: "I race a symlink swap between a large file and /proc/pid/environ to sneak past the os.stat zero-size check and leak the flag from the environment."
 summary: "The article explains exploiting a race condition in a Starlette app to bypass `os.stat` checks, using symlinks, and ultimately retrieving the flag from `/proc/self/environ`."
 canonicalURL: ""
 disableHLJS: false
