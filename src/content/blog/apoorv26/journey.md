@@ -163,7 +163,9 @@ so I took the left turn instead
 
 > If you read the blog, you actually find out about the pine tree Restaurant shown in the map,
 > so we're definitely on the right track. Also, reading the blog reveals makeki and his friends took a right turn in a muddy road
-> to reach the stay, so misty hills is out of the question too. Damn, reading the blog came in handy after all
+> to reach the stay, so misty hills is out of the question too.
+
+Damn, reading the blog came in handy after all
 
 ![](../images/2026-03-18-07-43-35.png)
 
@@ -173,7 +175,7 @@ The third part is: `911246201164`
 
 Having known all of this. The flag becomes: `apoorvctf{gggeb_C0d3_f0rc3s_911246201164}`
 
-Fun, instructive challenge that I really enjoyed
+Fun, instructive challenge that I really enjoyed!
 
 ![](https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3azhvbnNpa2J4eXU2bjJ6emNucGdnMmltc2c2c3h4bWlpM2J2Nms3YSZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/eODLcLD0Hcx7W/giphy.gif)
 
