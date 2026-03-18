@@ -169,11 +169,11 @@ Damn, reading the blog came in handy after all
 
 ![](../images/2026-03-18-07-43-35.png)
 
-The third part is: `911246201164`
+The third part is: `1246201164`
 
 ## Bringing it all together
 
-Having known all of this. The flag becomes: `apoorvctf{gggeb_C0d3_f0rc3s_911246201164}`
+Having known all of this. The flag becomes: `apoorvctf{gggeb_C0d3_f0rc3s_1246201164}`
 
 Fun, instructive challenge that I really enjoyed!
 
