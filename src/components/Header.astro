@@ -1,5 +1,6 @@
 ---
 import Link from '@/components/Link.astro'
+import SearchCommand from '@/components/SearchCommand.astro'
 import ThemeToggle from '@/components/ThemeToggle.astro'
 import { NAV_LINKS, SITE } from '@/consts'
 import { Image } from 'astro:assets'
@@ -17,8 +18,8 @@ import logo from '../../public/static/logo.svg'
         >{SITE.title}</span
       >
     </Link>
-    <div class="flex items-center gap-4">
-      <nav class="flex items-center gap-4 text-sm sm:gap-6">
+    <div class="flex items-center gap-2 sm:gap-4">
+      <nav class="flex items-center gap-3 text-sm sm:gap-6">
         {
           NAV_LINKS.map((item) => (
             <Link
@@ -30,6 +31,7 @@ import logo from '../../public/static/logo.svg'
           ))
         }
       </nav>
+      <SearchCommand />
       <ThemeToggle transition:persist />
     </div>
   </div>

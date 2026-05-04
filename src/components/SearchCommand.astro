@@ -1,0 +1,459 @@
+---
+import { Icon } from 'astro-icon/components'
+---
+
+<div class="contents" data-site-search>
+  <button
+    id="site-search-trigger"
+    type="button"
+    class="hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 -my-2 inline-flex h-8 items-center justify-center gap-2 rounded-md px-2 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-[3px]"
+    aria-haspopup="dialog"
+    aria-controls="site-search-dialog"
+    title="Search"
+  >
+    <Icon name="lucide:search" class="size-4" />
+    <span class="hidden md:inline">Search</span>
+    <kbd
+      class="bg-background text-muted-foreground hidden h-5 items-center rounded border px-1.5 font-mono text-[0.6875rem] lg:inline-flex"
+      data-search-shortcut
+    >
+      Ctrl K
+    </kbd>
+    <span class="sr-only">Search</span>
+  </button>
+
+  <dialog
+    id="site-search-dialog"
+    class="bg-background text-foreground backdrop:bg-foreground/30 fixed top-1/2 left-1/2 m-0 w-[min(calc(100vw-2rem),42rem)] -translate-x-1/2 -translate-y-1/2 max-w-none overflow-hidden border p-0 shadow-2xl backdrop:backdrop-blur-sm"
+    aria-labelledby="site-search-title"
+  >
+    <div class="flex items-center gap-2 border-b px-3 py-2">
+      <Icon
+        name="lucide:search"
+        class="text-muted-foreground size-4 shrink-0"
+      />
+      <h2 id="site-search-title" class="sr-only">Search</h2>
+      <input
+        id="site-search-input"
+        class="placeholder:text-muted-foreground h-10 min-w-0 flex-1 bg-transparent text-sm outline-none"
+        type="search"
+        placeholder="Search posts and projects..."
+        autocomplete="off"
+        spellcheck="false"
+        role="combobox"
+        aria-controls="site-search-results"
+        aria-expanded="true"
+      />
+      <button
+        id="site-search-close"
+        type="button"
+        class="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 inline-flex size-8 shrink-0 items-center justify-center rounded-md transition-colors focus-visible:ring-[3px]"
+        title="Close search"
+      >
+        <Icon name="lucide:x" class="size-4" />
+        <span class="sr-only">Close search</span>
+      </button>
+    </div>
+
+    <div id="site-search-status" class="sr-only" aria-live="polite"></div>
+    <p
+      id="site-search-empty"
+      class="text-muted-foreground hidden px-4 py-8 text-center text-sm"
+    >
+      No results found.
+    </p>
+    <ul
+      id="site-search-results"
+      class="max-h-[min(28rem,calc(100vh-8rem))] overflow-y-auto py-2"
+      role="listbox"
+    >
+    </ul>
+  </dialog>
+</div>
+
+<script>
+  type SearchIndexItem = {
+    title: string
+    description: string
+    href: string
+    section: string
+    date?: string
+    sortDate: number
+    tags: string[]
+    text: string
+  }
+
+  type SearchMatch = {
+    key: string
+    indices: [number, number][]
+  }
+
+  type SearchResult = {
+    item: SearchIndexItem
+    matches: SearchMatch[]
+  }
+
+  const siteSearchWindow = window as Window & {
+    initSiteSearch?: () => void
+    siteSearchBound?: boolean
+    cleanupSiteSearch?: () => void
+  }
+
+  siteSearchWindow.initSiteSearch = () => {
+    siteSearchWindow.cleanupSiteSearch?.()
+
+    const root = document.querySelector('[data-site-search]')
+    const trigger = document.getElementById('site-search-trigger')
+    const dialog = document.getElementById(
+      'site-search-dialog',
+    ) as HTMLDialogElement | null
+    const input = document.getElementById(
+      'site-search-input',
+    ) as HTMLInputElement | null
+    const closeButton = document.getElementById('site-search-close')
+    const resultsList = document.getElementById('site-search-results')
+    const emptyState = document.getElementById('site-search-empty')
+    const status = document.getElementById('site-search-status')
+
+    if (
+      !root ||
+      !trigger ||
+      !dialog ||
+      !input ||
+      !closeButton ||
+      !resultsList ||
+      !emptyState ||
+      !status
+    ) {
+      return
+    }
+
+    const controller = new AbortController()
+    const { signal } = controller
+    const resultLimit = 8
+    let selectedIndex = 0
+    let activeResults: SearchResult[] = []
+    let items: SearchIndexItem[] = []
+    let hasLoadedItems = false
+    let isLoadingItems = false
+    let loadFailed = false
+    let loadItemsPromise: Promise<void> | null = null
+
+    const loadItems = () => {
+      if (hasLoadedItems) return Promise.resolve()
+      if (loadItemsPromise) return loadItemsPromise
+
+      isLoadingItems = true
+      loadFailed = false
+      loadItemsPromise = fetch(`${import.meta.env.BASE_URL}search-index.json`)
+        .then((response) => {
+          if (!response.ok) throw new Error('Unable to load search index')
+          return response.json() as Promise<SearchIndexItem[]>
+        })
+        .then((indexItems) => {
+          items = indexItems
+          hasLoadedItems = true
+        })
+        .catch(() => {
+          loadFailed = true
+        })
+        .finally(() => {
+          isLoadingItems = false
+          loadItemsPromise = null
+        })
+
+      return loadItemsPromise
+    }
+
+    const closeSearch = () => {
+      if (!dialog.open) return
+      dialog.close()
+      input.value = ''
+      trigger.focus()
+    }
+
+    const updateSelection = (nextIndex: number) => {
+      selectedIndex = nextIndex
+      const options = resultsList.querySelectorAll<HTMLElement>(
+        '[data-search-option]',
+      )
+
+      options.forEach((option, index) => {
+        const selected = index === selectedIndex
+        option.setAttribute('aria-selected', String(selected))
+        option.classList.toggle('bg-muted', selected)
+      })
+
+      const selectedOption = options[selectedIndex]
+      if (selectedOption) {
+        input.setAttribute('aria-activedescendant', selectedOption.id)
+        selectedOption.scrollIntoView({ block: 'nearest' })
+      } else {
+        input.removeAttribute('aria-activedescendant')
+      }
+    }
+
+    const highlightText = (
+      text: string,
+      matches: SearchMatch[] | undefined,
+      key: string,
+    ) => {
+      if (!matches) return text
+
+      const match = matches.find((m) => m.key === key)
+      if (!match) return text
+
+      const result = []
+      let lastIndex = 0
+
+      // Sort matches by start index
+      const sortedIndices = [...match.indices].sort((a, b) => a[0] - b[0])
+
+      for (const [start, end] of sortedIndices) {
+        if (start < lastIndex) continue // Skip overlapping matches
+        
+        result.push(text.slice(lastIndex, start))
+        const span = document.createElement('span')
+        span.className = 'text-amber-600 dark:text-amber-400 font-bold underline decoration-amber-600/50 dark:decoration-amber-400/50'
+        span.textContent = text.slice(start, end + 1)
+        result.push(span.outerHTML)
+        lastIndex = end + 1
+      }
+
+      result.push(text.slice(lastIndex))
+      return result.join('')
+    }
+
+    const appendText = (
+      element: HTMLElement,
+      text: string | undefined,
+      className: string,
+    ) => {
+      if (!text) return
+      const span = document.createElement('span')
+      span.className = className
+      span.textContent = text
+      element.append(span)
+    }
+
+    const getMatches = (text: string, query: string, key: string): SearchMatch | null => {
+      const indices: [number, number][] = []
+      let pos = text.toLowerCase().indexOf(query.toLowerCase())
+      
+      while (pos !== -1) {
+        indices.push([pos, pos + query.length - 1])
+        pos = text.toLowerCase().indexOf(query.toLowerCase(), pos + query.length)
+      }
+
+      return indices.length > 0 ? { key, indices } : null
+    }
+
+    const renderResults = () => {
+      if (isLoadingItems && !hasLoadedItems) {
+        activeResults = []
+        selectedIndex = -1
+        resultsList.replaceChildren()
+        emptyState.textContent = 'Loading search...'
+        emptyState.classList.remove('hidden')
+        status.textContent = 'Loading search.'
+        return
+      }
+
+      if (loadFailed && !hasLoadedItems) {
+        activeResults = []
+        selectedIndex = -1
+        resultsList.replaceChildren()
+        emptyState.textContent = 'Search is unavailable.'
+        emptyState.classList.remove('hidden')
+        status.textContent = 'Search is unavailable.'
+        return
+      }
+
+      const query = input.value.trim()
+
+      if (query === '') {
+        activeResults = []
+      } else {
+        activeResults = items
+          .map((item) => {
+            const matches: SearchMatch[] = []
+            
+            const titleMatch = getMatches(item.title, query, 'title')
+            if (titleMatch) matches.push(titleMatch)
+            
+            const descMatch = getMatches(item.description, query, 'description')
+            if (descMatch) matches.push(descMatch)
+
+            const tagsMatch = getMatches(item.tags.join(' '), query, 'tags')
+            if (tagsMatch) matches.push(tagsMatch)
+
+            const textMatch = getMatches(item.text, query, 'text')
+            if (textMatch) matches.push(textMatch)
+
+            return { item, matches }
+          })
+          .filter((result) => result.matches.length > 0)
+          .sort((a, b) => {
+            // Sort by whether title matches first, then by date
+            const aTitle = a.matches.some(m => m.key === 'title')
+            const bTitle = b.matches.some(m => m.key === 'title')
+            if (aTitle && !bTitle) return -1
+            if (!aTitle && bTitle) return 1
+            return b.item.sortDate - a.item.sortDate
+          })
+          .slice(0, resultLimit)
+      }
+
+      selectedIndex = activeResults.length > 0 ? 0 : -1
+      resultsList.replaceChildren()
+      emptyState.textContent = 'No results found.'
+      emptyState.classList.toggle(
+        'hidden',
+        activeResults.length > 0 || input.value.trim().length === 0,
+      )
+      status.textContent = `${activeResults.length} result${
+        activeResults.length === 1 ? '' : 's'
+      } available.`
+
+      activeResults.forEach(({ item, matches }, index) => {
+        const option = document.createElement('li')
+        option.id = `site-search-result-${index}`
+        option.setAttribute('role', 'option')
+        option.setAttribute('data-search-option', '')
+        option.setAttribute('aria-selected', String(index === selectedIndex))
+        option.className =
+          'mx-2 rounded-md transition-colors hover:bg-muted/70 aria-selected:bg-muted'
+
+        const link = document.createElement('a')
+        link.href = item.href
+        link.className = 'block px-3 py-2'
+
+        if (/^https?:\/\//.test(item.href)) {
+          link.target = '_blank'
+          link.rel = 'noreferrer'
+        }
+
+        const title = document.createElement('div')
+        title.className = 'text-sm font-medium text-foreground'
+        title.innerHTML = highlightText(item.title, matches, 'title')
+
+        const description = document.createElement('p')
+        description.className =
+          'mt-0.5 line-clamp-2 text-sm text-muted-foreground'
+        description.innerHTML = highlightText(
+          item.description,
+          matches,
+          'description',
+        )
+
+        const meta = document.createElement('div')
+        meta.className =
+          'mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground'
+        appendText(meta, item.section, 'font-medium text-foreground/80')
+        appendText(meta, item.date, '')
+        item.tags.slice(0, 3).forEach((tag) => appendText(meta, `#${tag}`, ''))
+
+        link.append(title, description, meta)
+        link.addEventListener('click', closeSearch, { signal })
+        option.append(link)
+        option.addEventListener('pointermove', () => updateSelection(index), {
+          signal,
+        })
+        resultsList.append(option)
+      })
+
+      updateSelection(selectedIndex)
+    }
+
+    const openSearch = () => {
+      if (!dialog.open) dialog.showModal()
+      const loadPromise = hasLoadedItems ? null : loadItems()
+      renderResults()
+      if (loadPromise) void loadPromise.then(renderResults)
+      requestAnimationFrame(() => {
+        input.focus()
+        input.select()
+      })
+    }
+
+    trigger.addEventListener('click', openSearch, { signal })
+    closeButton.addEventListener('click', closeSearch, { signal })
+    dialog.addEventListener(
+      'click',
+      (event) => {
+        if (event.target === dialog) closeSearch()
+      },
+      { signal },
+    )
+    dialog.addEventListener(
+      'close',
+      () => {
+        input.value = ''
+      },
+      { signal },
+    )
+    input.addEventListener('input', renderResults, { signal })
+    input.addEventListener(
+      'keydown',
+      (event) => {
+        if (event.key === 'ArrowDown') {
+          event.preventDefault()
+          if (activeResults.length > 0) {
+            updateSelection((selectedIndex + 1) % activeResults.length)
+          }
+        }
+
+        if (event.key === 'ArrowUp') {
+          event.preventDefault()
+          if (activeResults.length > 0) {
+            updateSelection(
+              (selectedIndex - 1 + activeResults.length) % activeResults.length,
+            )
+          }
+        }
+
+        if (event.key === 'Enter' && selectedIndex >= 0) {
+          event.preventDefault()
+          resultsList
+            .querySelector<HTMLAnchorElement>(
+              `#site-search-result-${selectedIndex} a`,
+            )
+            ?.click()
+        }
+      },
+      { signal },
+    )
+    document.addEventListener(
+      'keydown',
+      (event) => {
+        if (
+          (event.ctrlKey || event.metaKey) &&
+          event.key.toLowerCase() === 'k'
+        ) {
+          event.preventDefault()
+          openSearch()
+        }
+      },
+      { signal },
+    )
+
+    const shortcut = root.querySelector('[data-search-shortcut]')
+    if (shortcut && navigator.userAgent.toLowerCase().includes('mac')) {
+      shortcut.textContent = 'Cmd K'
+    }
+
+    siteSearchWindow.cleanupSiteSearch = () => {
+      controller.abort()
+      if (dialog.open) dialog.close()
+    }
+  }
+
+  siteSearchWindow.initSiteSearch()
+
+  if (!siteSearchWindow.siteSearchBound) {
+    document.addEventListener('astro:page-load', () => {
+      siteSearchWindow.initSiteSearch?.()
+    })
+    siteSearchWindow.siteSearchBound = true
+  }
+</script>
