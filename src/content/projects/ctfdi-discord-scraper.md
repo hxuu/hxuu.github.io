@@ -1,6 +1,6 @@
 ---
-name: 'CTFDi – Security Discord Article Scraper'
-description: "I designed and implemented CTFDi, a bash-based web scraper that automatically gathers CTF writeups and security articles from Discord servers. The tool parses and aggregates content from multiple security community channels, streamlining research and keeping up with the latest challenge solutions and vulnerability disclosures without manual browsing."
+name: 'CTFDi'
+description: "I built CTFDi, a bash-based scraper that aggregates CTF writeups and security articles from Discord servers to streamline security research."
 tags: ['open-source', 'bash', 'automation', 'ctf', 'scraping', 'cli-tool']
 image: './images/ctfdi.png'
 link: 'https://github.com/hxuu/ctfdi'

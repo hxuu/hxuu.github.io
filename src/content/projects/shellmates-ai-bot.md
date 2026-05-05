@@ -1,6 +1,6 @@
 ---
-name: 'Shellmates AI-Powered Discord Bot'
-description: "I designed and implemented a Python-based Discord bot for the Shellmates security club and integrated AI capabilities to help members solve challenges and automate club operations. The bot handles problem-solving assistance, community interactions, and task automation, serving as an active utility tool for an active cybersecurity student organization."
+name: 'Shellmate'
+description: "I developed a Python-based Discord bot with AI capabilities for the Shellmates security club to automate operations and assist members with CTF challenges."
 tags: ['open-source', 'python', 'discord-bot', 'ai', 'automation', 'security']
 image: './images/shellmate-bot.png'
 link: 'https://github.com/hxuu/shellmates-bot'

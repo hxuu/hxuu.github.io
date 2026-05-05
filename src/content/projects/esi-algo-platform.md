@@ -1,6 +1,6 @@
 ---
-name: 'ESI Algo – DSA Study Platform'
-description: "I designed and implemented ESI Algo, a website dedicated to helping computer science students at ESI study Data Structures and Algorithms. The platform provides explanations, visualizations, and exercises to deepen algorithmic thinking, serving as a community resource for the student body."
+name: 'ESI Algo'
+description: "I developed ESI Algo, an educational platform for computer science students to study Data Structures and Algorithms through visualizations and exercises."
 tags: ['open-source', 'education', 'web', 'javascript', 'dsa', 'algorithms']
 image: './images/esi-algo.png'
 link: 'https://github.com/hxuu/esi-algo'

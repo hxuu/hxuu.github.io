@@ -1,6 +1,6 @@
 ---
-name: 'Automated OpenVPN Infrastructure'
-description: "I designed and implemented a fully automated OpenVPN infrastructure from scratch using Proxmox as the hypervisor and pure bash scripting. The project handles provisioning, configuration, and lifecycle management of VPN nodes without relying on any third-party automation tools, demonstrating deep knowledge of Linux networking, virtualization, and shell scripting."
+name: 'AutoVPN'
+description: "I built a fully automated OpenVPN infrastructure from scratch using Proxmox and bash, managing the entire lifecycle of VPN nodes without third-party tools."
 tags: ['open-source', 'bash', 'networking', 'vpn', 'proxmox', 'linux', 'devops', 'infrastructure']
 image: './images/libvirt-ovpn.png'
 link: 'https://github.com/hxuu/libvirt-ovpn/'

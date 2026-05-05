@@ -1,6 +1,6 @@
 ---
-name: 'RFC 3986 URI Parser in JavaScript'
-description: "I designed and implemented a compliant URI parser in JavaScript, built strictly according to the RFC 3986 specification. The project parses URIs into their component parts (scheme, authority, path, query, fragment) using the grammar defined in the standard, serving as both a learning exercise in specification-driven development and a reference implementation."
+name: 'Strict URI'
+description: "I implemented a spec-compliant URI parser in JavaScript based on RFC 3986, accurately parsing all URI components according to the standard grammar."
 tags: ['open-source', 'javascript', 'parsing', 'rfc', 'learning-project']
 image: './images/uri-parser.png'
 link: 'https://github.com/hxuu/uri-parser'
