@@ -14,18 +14,24 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
 
 <Layout class="max-w-3xl">
     <PageHead slot="head" title="Home" />
-    <section class="border">
+    <section class="border flex">
 
-        <div class="flex flex-col space-y-1.5 p-6">
-            <div class="flex items-center mb-3 space-x-2.5">
+        <div class="mt-1 space-y-1.5 p-6">
+            <img src="https://gravatar.com/userimage/273235725/66f2a5be514322a4dd1efa5650bdf573.jpeg?size=128">
+        </div>
+        <div>
+        <div class="flex flex-col space-y-1.5 py-6">
+            <div class="flex items-center mb-3">
                 <h3 class="text-3xl leading-none font-medium">Hxuu</h3>
             </div>
             <p class="text-muted-foreground text-sm">
                 /hɛks uː/ &bull; <span class="font-medium">long story behind this name</span>
             </p>
         </div>
-        <div class="p-6 pt-0">
-            <p class="text-muted-foreground mb-2 text-sm">Welcome to my blog. Check below to see my socials!</p>
+        <div class="py-6 pt-0">
+            <p class="text-muted-foreground mb-2 text-sm">I'm Anas! I'm a security researcher based in Algeria.</p>
+            <p class="text-muted-foreground text-sm">Welcome to my blog. You can read more about me <a href="/about" target="_self" class="inline-block duration-300 ease-in-out text-foreground decoration-muted-foreground hover:decoration-foreground font-medium break-words underline underline-offset-[3px] transition-colors"> here </a>!</p>
+        </div>
         </div>
     </section>
     <section class="flex flex-col gap-y-4">
