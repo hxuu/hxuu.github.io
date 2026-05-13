@@ -1,5 +1,5 @@
 ---
-title: "\"IngeHack 2k26\": The Experience"
+title: "\"IngeHack 2k26 (part 01)\": The Monster in your Build Cache"
 date: 2026-05-04T23:18:35+01:00
 tags: ["ctf", "write-up", "ingehack"]
 image: ./ingehack.jpeg
