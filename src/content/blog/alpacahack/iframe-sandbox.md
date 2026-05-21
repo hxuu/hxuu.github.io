@@ -7,6 +7,8 @@ author: "hxuu"
 description: "This challenge was about an HTML preview service using an iframe. The author hopes the \"sandbox\" attribute is enough to prevent XSS."
 ---
 
+*[link to challenge if you wanna give it a try](https://alpacahack.com/daily-bside/challenges/iframe-sandbox)*
+
 ## Unnecessary rambling (skip if not interested)
 
 For the past month or so, I've been an author for a couple of local CTFs where I created challenges about client-side bugs related to iframes and OAuth, and a few more about GitHub Actions cache poisoning. I found that during my research for these challenges, the difficulty level I enjoyed in CTFs increased. SSTIs and the like were no longer things I found enjoyable, and I found myself looking for harder challenges to test my skills.
