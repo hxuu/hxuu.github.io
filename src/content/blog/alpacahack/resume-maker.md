@@ -133,7 +133,34 @@ Among all the defined properties, none are strongly typed.
 
 > *By strongly typed, I mean using declarations like `public string $name`, for example.*
 
-This means we can assign any type to any property. Thanks to the abundance of `echo` statements later in the code, these properties will be cast to strings, allowing us to inject our maliciously serialized `Icon` object comfortably!
+This means we can assign any type to any property. Thanks to the abundance of string casting statements later in the code, these properties will be cast to strings, allowing us to nest our maliciously serialized `Icon` object inside
+one of User's properties!
+
+```php
+<?php
+function h($value): string
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+?>
+
+<?php else: ?>
+    <header>
+        <?= $icon->render() ?>
+        <div>
+            <h1><?= h($user->name) ?></h1>
+            <p><strong><?= h($user->title) ?></strong></p>
+        </div>
+    </header>
+    <p><?= nl2br(h($user->summary)) ?></p>
+
+    <h2>Skills</h2>
+    <p><?= nl2br(h($user->skills)) ?></p>
+
+    <h2>Serialized</h2>
+    <pre><?= h($serialized) ?></pre>
+<?php endif; ?>
+```
 
 ## Solution
 
