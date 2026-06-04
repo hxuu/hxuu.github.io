@@ -1,0 +1,226 @@
+---
+title: "\"AlpacaHack - 2022\": Disco Party"
+date: 2026-06-04T16:20:36+01:00
+tags: ["alpacahack", "write-up", "xs-leak"]
+image: ./disco-party.png
+author: "hxuu"
+description: "Challenge about discord's global cache used as XS-Leak oracle: \"It's party time right now, so could you refrain from discussing any complicated matters?\""
+---
+
+*[link to the challenge if you wanna give it a try](https://alpacahack.com/challenges/disco-party)*
+
+After taking some time to do some platform engineering work, I was scrolling on twitter when I read [this](https://x.com/es3n1n/status/2056448315827319184) twitter post
+about "Common Mistakes While Running a CTF", reading the comments, [keymoon](https://x.com/kymn_) had some GREAT
+takes that got me thinking: "Wait a minute, I've seen this person before"
+
+![](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzVyN2ZxZmh3bzJzMnF2c3oxcTl0bmRqYW01eW5ndnJ3ZXl3cjNmZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/agmheddabICHK/giphy.gif)
+
+Today I decided to solve one of keymoon's challenges, which turned out just as great as his/her comments.
+
+## Challenge description
+
+![](../images/2026-06-04-18-47-35.png)
+
+The challenge starts as a invitation taking system. You write posts with inviting
+content with the ability to report the post to an admin for visit.
+
+![invitation creation](../images/2026-06-04-18-48-55.png)
+
+The admin bot doesn't visit any link, rather, is given a link to your post along
+with a reason of report.
+
+![report on discord](../images/2026-06-04-18-50-44.png)
+
+---
+
+The flag is located in injected into the index.html page when is_admin evaluated to True:
+
+```py
+@app.route("/post/<string(length=16):id>", methods=["GET"])
+def get_post(id):
+    """Read a ticket"""
+    # Get ticket by ID
+    content = get_redis_conn(DB_TICKET).get(id)
+    if content is None:
+        return flask.abort(404, "not found")
+
+    # Check if admin
+    content = json.loads(content)
+    key = flask.request.args.get("key")
+    is_admin = isinstance(key, str) and get_key(id) == key
+
+    return flask.render_template(
+        "index.html",
+        **content,
+        is_post=True,
+        panel=f"""
+<strong>Hello admin! Your flag is: {FLAG}</strong><br>
+<form id="delete-form" method="post" action="/api/delete">
+    <input name="id" type="hidden" value="{id}">
+    <input name="key" type="hidden" value="{key}">
+    <button id="modal-button-delete" type="button">Delete This Post</button>
+</form>
+""" if is_admin else "",
+        url=flask.request.url,
+        sitekey=RECAPTCHA_SITE_KEY
+    )
+```
+
+is_admin evaluates to true if you supply a key query parameter equal to a hash
+tied to your post id and a secret (unguessable) key:
+
+```py
+def get_key(id):
+    assert isinstance(id, str)
+    return b64digest(hashlib.sha256((APP_KEY + id).encode()).digest())[:10]
+```
+
+To solve the challenge, we have many options to try, only one leads to the solution though :)
+
+## Issues and difficulties
+
+Looking at the code above, it should be clear that the key can't be guessed, moreover
+a string type check is done, so no rich object tricks are possible.
+
+Knowing that post viewing mechanism is safe. I moved to checking the reporting mechanism.
+
+### Dev assumption (1): I'm always reporting to the correct BOT.
+
+One thing I tried when solving the challenge was checking if the BOT token was
+safely imported to the application. The bot did this to import the discord bot token:
+
+```py
+#!/usr/bin/env python3
+import discord
+import redis
+
+from secret import *
+
+DB_BOT = 1
+
+client = discord.Client()
+
+@client.event
+async def on_ready():
+    pass # only for the sake of showing, this actually included code
+
+client.run(DISCORD_SECRET)
+```
+
+"What if secret.py is malicious or the import mechanism can be tampered with?", I thought.
+Turns out, those thoughts were futile as there is no file writing pimitive, and even then,
+I wasn't sure how to trigger another import.
+
+> According to python docs: The import statement combines two operations; it searches for the named module, then it binds the results of that search to a name in the local scope.
+
+### Dev assumption (2): discord channel cannot be tampered with
+
+The second dev assumption was: "sending a text to channel X from bot X will send it to that channel instead of A USER CONTROLLED CHANNEL."
+
+To verify this, I investigated the reporting mechanism, for the bot to send a report, the following happens first:
+
+1. a <url> and a <reason> are taken from the user:
+
+```py
+@app.route("/api/report", methods=["POST"])
+def api_report():
+    """Reoprt an invitation ticket"""
+    # Get parameters
+    try:
+        url = flask.request.form["url"]
+        reason = flask.request.form["reason"]
+        recaptcha_token = flask.request.form["g-recaptcha-response"]
+    except Exception:
+        return flask.abort(400, "Invalid request")
+```
+
+2. After parsing the url and ensuring it passes few checks (We can encounter them using dynamic testing),
+we push the message to the redis database:
+
+```py
+    key = get_key(args["id"])
+    message = f"URL: {url}?key={key}\nReason: {reason}"
+
+    try:
+        get_redis_conn(DB_BOT).rpush(
+            'report', message[:MESSAGE_LENGTH_LIMIT]
+        )
+    except Exception:
+        return flask.jsonify({"result": "NG", "message": "Post failed"})
+
+    return flask.jsonify({"result": "OK", "message": "Successfully reported"})
+```
+
+3. The bot infinitely polls the redis db, and once it finds an entry, sends it directly
+to the correct location:
+
+```py
+@client.event
+async def on_ready():
+    print(f"We've logged in as {client.user}")
+    channel = client.get_channel(LOGGING_CHANNEL_ID)
+    if channel is None:
+        print("Failed to get channel...")
+        exit(1)
+
+    c = redis.Redis(host='redis', port=6379, db=DB_BOT)
+    while True:
+        r = c.blpop('report', 1)
+        if r is not None:
+            key, value = r
+            try:
+                await channel.send(value.decode())
+            except Exception as e:
+                print(f"[ERROR] {e}")
+```
+
+Crucially, it uses `channel.send(...)` to send the message.
+
+![](../images/2026-06-04-19-12-24.png)
+
+I thought we can send a command like `/send <user> <message>` instead of raw text,
+but looking at the API reference above, this was a dead end too :(
+
+## Solution
+
+Now that we checked the post viewing and reporting mechanism and nothing appealed to us.
+The challenge is most certainly related to how discord handles messages.
+
+When you first send a message containing a link inside a discord channel, you get an [Embed](https://discordpy-reborn.readthedocs.io/en/latest/api.html#embed)
+after discord crawls your link, so that if you send the same message twice, you will
+get an embed attribute on the [Message](https://discordpy-reborn.readthedocs.io/en/latest/api.html#discord.Message) object.
+
+![](../images/2026-06-04-19-24-01.png)
+
+The question then becomes: "If embed attribute exists when message is the same, It means it's
+cached, is the cache in this case global or local to one account?"
+
+Well, it turns out it's global! (which makes sense). If two people link to the same
+URL twice, it doesn't make sense to make discord crawl both URLs to generate embeds from
+them, one suffices. What's interesting to us is that we can use is as an oracle:
+
+bot visit `http://hostname:port/post/path?key=A` and loads an embed. If we send
+a message with a different link, no embed attribute would exist, but if we visit the latter
+URL again, the embed will exist. Effectively an oracle!
+
+> An oracle is an expression that can be answered by Yes or No.
+
+### Solve
+
+We can get the flag in the following way:
+
+1. First, we create a dummy post, then
+2. We report a URL with overflowing slashes `/` to hit the 2000 discord text limit
+at `?key=A`
+3. Using our own bot in our own server, we send a text with URL `?key=A`
+4. If embed attribute exists, character is added to key and padding decreases by 1.
+
+We repeat the process 10 times to exfiltrate the whole key and get the flag:
+
+```py
+```
+
+## Key takeaways
+
+## References
+
