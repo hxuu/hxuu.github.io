@@ -1,5 +1,5 @@
 ---
-title: "\"AlpacaHack - 2022\": Disco Party"
+title: "\"AlpacaHack - 2022\": Disco Party/Festival"
 date: 2026-06-04T16:20:36+01:00
 tags: ["alpacahack", "write-up", "xs-leak"]
 image: ./disco-party.png
