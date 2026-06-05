@@ -119,7 +119,7 @@ The second dev assumption was: "sending a text to channel X from bot Y will send
 
 To verify this, I investigated the reporting mechanism. For the bot to send a report, the following happens first:
 
-1. A <url> and a <reason> are taken from the user:
+1. A *url* and a *reason* are taken from the user:
 
 ```py
 @app.route("/api/report", methods=["POST"])
