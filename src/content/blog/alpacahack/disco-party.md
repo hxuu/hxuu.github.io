@@ -115,7 +115,7 @@ I wasn't sure how to trigger another import.
 
 ### Dev assumption (2): Discord channel cannot be tampered with
 
-The second dev assumption was: "sending a text to channel X from bot X will send it to that channel instead of A USER CONTROLLED CHANNEL."
+The second dev assumption was: "sending a text to channel X from bot Y will send it to that channel instead of A USER CONTROLLED CHANNEL."
 
 To verify this, I investigated the reporting mechanism. For the bot to send a report, the following happens first:
 
