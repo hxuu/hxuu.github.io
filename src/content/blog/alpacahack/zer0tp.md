@@ -100,6 +100,8 @@ def set_admin():
         r.hset(username, "admin", 1)
     else:
         r.hset(username, "admin", 0)
+
+    return flask.jsonify({"result": "OK"})
 ```
 
 If we guess a correct `secret`, we can set admin to 1. Let's see how this secret is generated:
