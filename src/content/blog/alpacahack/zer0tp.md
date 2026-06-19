@@ -9,6 +9,8 @@ description: "Cracking an md5 hash and guessing a secret from a truncated zlib c
 
 *[link to the challenge if you wanna give it a try](https://alpacahack.com/challenges/zer0tp)*
 
+*(kudos to Ramzy for being great company while solving this challenge, love you bud)*
+
 After solving discoParty--the challenge recommended to me by keymoon, I asked for other suggestions
 from keymoon in hopes of triggering the same dopamine rush from solving a hard CTF challenge.
 
