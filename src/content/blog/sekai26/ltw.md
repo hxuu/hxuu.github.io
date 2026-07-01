@@ -33,7 +33,7 @@ and so I played this year's SEKAI to put myself to the test.
 The plan was to rely only on my skills and get as minimum of a help from the AI as possible.
 This writeup documents my thought process while solving the first web challenge called `&lt;\w+`
 
-TL;DR: The bluemonday strict policy + regex tag-stripping makes every individual write safe: no single write can produce `<tag>`. But the file write path uses `os.OpenFile` with `O_TRUNC` and zero locking. By racing a 67-byte write (`AAA...AAA<`) against an 89-byte write (`AAA...AAAsvg/onload=alert(1)>`), Linux's `i_size` semantics kick in: the smaller write won't shrink `i_size`, so the trailing 22 bytes from the larger write (`svg/onload=alert(1)>`) survive past the overwrite boundary. The resulting file reads as `<svg/onload=alert(1)>`, a live XSS payload frozen into the file. The admin bot's single GET reads it and executes the XSS, giving us the flag.
+TL;DR: The bluemonday strict policy + regex tag-stripping makes every individual write safe: no single write can produce `<tag>`. But the file write path uses `os.OpenFile` with `O_TRUNC` and zero locking. By racing a 67-byte write (`AAA...AAA<`) against an 87-byte write (`AAA...AAAsvg/onload=alert(1)>`), Linux's `i_size` semantics kick in: the smaller write won't shrink `i_size`, so the trailing 20 bytes from the larger write (`svg/onload=alert(1)>`) survive past the overwrite boundary. The resulting file reads as `<svg/onload=alert(1)>`, a live XSS payload frozen into the file. The admin bot's single GET reads it and executes the XSS, giving us the flag.
 
 Enjoy the human experience :)
 
@@ -203,10 +203,10 @@ is not updated. In the same man page, we see:
 ![](../images/2026-07-01-16-52-08.png)
 
 It means that writes of smaller size don't update the size of the file, nor the offset.
-Concretely: a right write of 89 bytes extends the file to i_size = 89. Then a left write
-of 67 bytes overwrites bytes 0-66, but since 67 < 89, i_size stays 89. The trailing 22
+Concretely: a right write of 87 bytes extends the file to i_size = 87. Then a left write
+of 67 bytes overwrites bytes 0-66, but since 67 < 87, i_size stays 87. The trailing 20
 bytes from the right write survive past the overwrite boundary. If a read lands now, it
-sees a spliced result: bytes 0-66 from the left (ending with `<`), bytes 67-88 from the
+sees a spliced result: bytes 0-66 from the left (ending with `<`), bytes 67-86 from the
 right (starting with `svg/onload=alert(1)>`). Together they form `<svg/onload=alert(1)>`,
 a valid XSS payload. Neither write alone produces an opening tag, but the race stitches
 them together.
