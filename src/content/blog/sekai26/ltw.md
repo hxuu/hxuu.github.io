@@ -204,12 +204,16 @@ is not updated. In the same man page, we see:
 
 It means that writes of smaller size don't update the size of the file, nor the offset.
 Concretely: a right write of 87 bytes extends the file to i_size = 87. Then a left write
-of 67 bytes overwrites bytes 0-66, but since 67 < 87, i_size stays 87. The trailing 20
-bytes from the right write survive past the overwrite boundary. If a read lands now, it
-sees a spliced result: bytes 0-66 from the left (ending with `<`), bytes 67-86 from the
-right (starting with `svg/onload=alert(1)>`). Together they form `<svg/onload=alert(1)>`,
-a valid XSS payload. Neither write alone produces an opening tag, but the race stitches
-them together.
+of 67 bytes overwrites bytes 0-66, but since 67 < 87, i_size stays 87. The left write
+lands at offset 0, not 67, because each `open()` returns a separate file descriptor and
+each fd tracks its own position independently. The right write's fd advanced to 87, but
+the left write's fd never moved, so it writes from the start. The trailing 20 bytes from
+the right write survive past the overwrite boundary. If a read lands now, it sees a spliced
+result: bytes 0-66 from the left (ending with `<`), bytes 67-86 from the right (starting
+with `svg/onload=alert(1)>`). Together they form `<svg/onload=alert(1)>`, a valid XSS
+payload. Neither write alone produces an opening tag, but the race stitches them together.
+
+![](../images/2026-07-01-18-40-15.png)
 
 ## 4. Exploitation
 
